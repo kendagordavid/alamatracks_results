@@ -1,36 +1,68 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AlamaTracks Public Results
 
-## Getting Started
+Production-ready public race results website powered by Next.js and the AlamaTracks API.
 
-First, run the development server:
+## Features
+
+- Premium landing page with event metadata, stats, and athlete search
+- Virtualized results table with sorting, filtering, pagination, CSV export, and print
+- Shareable athlete profiles with QR codes
+- Statistics dashboard with Recharts visualizations
+- Light/dark theme, auto-refresh, SEO (metadata, sitemap, JSON-LD)
+- Server-side API proxy with React Query client caching
+
+## Prerequisites
+
+- Node.js 20+
+- AlamaTracks Django API running and reachable
+
+## Setup
 
 ```bash
+cp .env.example .env.local
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Description |
+|---|---|---|
+| `ALAMATRACKS_API_URL` | Yes | Base API URL, e.g. `http://127.0.0.1:8000/api/v1` |
+| `ALAMATRACKS_EVENT_ID` | Yes | Event UUID for public results |
+| `NEXT_PUBLIC_SITE_URL` | Yes | Public site URL for SEO/sharing |
+| `NEXT_PUBLIC_EVENT_LOGO_URL` | No | Optional event logo image URL |
+| `NEXT_PUBLIC_AUTO_REFRESH_SECONDS` | No | Polling interval (default `45`, `0` to disable) |
 
-## Learn More
+## Scripts
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+npm run dev      # Start development server
+npm run build    # Production build
+npm run start    # Start production server
+npm run lint     # ESLint
+```
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Push the repository to GitHub
+2. Import the project in Vercel
+3. Set environment variables from `.env.example`
+4. Set `ALAMATRACKS_API_URL` to your production Django API host
+5. Deploy
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Architecture
+
+```
+Browser → Next.js (/api/results proxy) → AlamaTracks Django API
+                ↓
+         React Query cache (client)
+```
+
+Results are enriched client-side: overall rank, pace, gun time, and gender inference from category names.
+
+## API Notes
+
+The public results endpoint returns **published finishers only**. Fields like team, country, splits, DNS, and DNF are not yet exposed by the API — the UI handles these gracefully with placeholders.

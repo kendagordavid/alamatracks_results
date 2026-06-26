@@ -1,0 +1,35 @@
+@media print {
+  header,
+  footer,
+  .no-print,
+  [data-slot="sheet-overlay"],
+  [data-slot="sheet-close"] {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+    color: black !important;
+  }
+
+  .print-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 10pt;
+  }
+
+  .print-table th,
+  .print-table td {
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    text-align: left;
+  }
+
+  .print-table thead {
+    display: table-header-group;
+  }
+
+  @page {
+    margin: 1cm;
+  }
+}
