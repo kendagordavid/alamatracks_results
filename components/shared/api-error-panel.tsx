@@ -46,6 +46,11 @@ export function ApiErrorPanel({
 
         <div className="mt-6 flex justify-center gap-3">
           <Button asChild variant="outline">
+            <Link href="/api/health" target="_blank">
+              Check config status
+            </Link>
+          </Button>
+          <Button asChild variant="outline">
             <Link href="/results">Try results page</Link>
           </Button>
         </div>
