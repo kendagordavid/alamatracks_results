@@ -230,6 +230,14 @@ export function ResultsExperience() {
     overscan: 10,
   });
 
+  const virtualRows = rowVirtualizer.getVirtualItems();
+  const paddingTop = virtualRows.length > 0 ? virtualRows[0].start : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? rowVirtualizer.getTotalSize() - virtualRows[virtualRows.length - 1].end
+      : 0;
+  const visibleColumnCount = table.getVisibleLeafColumns().length;
+
   const openAthlete = useCallback((athlete: AthleteResult) => {
     setSelectedAthlete(athlete);
     setSheetOpen(true);
@@ -463,13 +471,16 @@ export function ResultsExperience() {
                   </tr>
                 ))}
               </thead>
-              <tbody
-                style={{
-                  height: `${rowVirtualizer.getTotalSize()}px`,
-                  position: "relative",
-                }}
-              >
-                {rowVirtualizer.getVirtualItems().map((virtualRow) => {
+              <tbody>
+                {paddingTop > 0 ? (
+                  <tr aria-hidden>
+                    <td
+                      colSpan={visibleColumnCount}
+                      style={{ height: paddingTop, padding: 0, border: 0 }}
+                    />
+                  </tr>
+                ) : null}
+                {virtualRows.map((virtualRow) => {
                   const row = table.getRowModel().rows[virtualRow.index];
                   if (!row) return null;
                   return (
@@ -478,14 +489,6 @@ export function ResultsExperience() {
                       data-index={virtualRow.index}
                       ref={rowVirtualizer.measureElement}
                       className="cursor-pointer border-b border-border/40 transition-colors hover:bg-muted/50 focus-within:bg-muted/50"
-                      style={{
-                        display: "table-row",
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        transform: `translateY(${virtualRow.start}px)`,
-                      }}
                       onClick={() => openAthlete(row.original)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") openAthlete(row.original);
@@ -511,6 +514,14 @@ export function ResultsExperience() {
                     </tr>
                   );
                 })}
+                {paddingBottom > 0 ? (
+                  <tr aria-hidden>
+                    <td
+                      colSpan={visibleColumnCount}
+                      style={{ height: paddingBottom, padding: 0, border: 0 }}
+                    />
+                  </tr>
+                ) : null}
               </tbody>
             </table>
           </div>

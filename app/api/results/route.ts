@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import {
-  fetchPublicResultsFromApi,
-} from "@/services/results-api";
+import { fetchPublicResultsFromApi } from "@/services/results-api";
+import { ConfigurationError, getConfigurationHint } from "@/lib/errors";
 import { ResultsApiError } from "@/types/results";
 
 export const revalidate = 30;
@@ -21,9 +20,15 @@ export async function GET() {
         { status: error.status },
       );
     }
+    if (error instanceof ConfigurationError) {
+      return NextResponse.json(
+        { error: getConfigurationHint(error) },
+        { status: 503 },
+      );
+    }
     console.error("Results API error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: getConfigurationHint(error) },
       { status: 500 },
     );
   }

@@ -1,0 +1,2 @@
+# Vercel reads this for the build environment
+node-version=22

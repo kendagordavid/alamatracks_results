@@ -26,7 +26,7 @@ import {
   getMedalType,
 } from "@/utils/rankings";
 import { formatDurationMs, getFinishBadges } from "@/utils/time";
-import { getClientEnv } from "@/lib/env";
+import { getPublicSiteUrl } from "@/lib/env";
 
 const QRCode = dynamic(
   () => import("qrcode.react").then((mod) => mod.QRCodeSVG),
@@ -46,8 +46,7 @@ export function AthleteProfileContent({
   eventName,
   showQr = true,
 }: AthleteProfileContentProps) {
-  const { NEXT_PUBLIC_SITE_URL } = getClientEnv();
-  const athleteUrl = `${NEXT_PUBLIC_SITE_URL}/athlete/${athlete.id}`;
+  const athleteUrl = `${getPublicSiteUrl()}/athlete/${athlete.id}`;
   const percentile = computePercentile(athlete, allResults);
   const gap = gapToWinner(athlete, allResults);
   const badges = getFinishBadges(athlete.chipTimeMs);

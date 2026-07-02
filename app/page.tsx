@@ -3,11 +3,13 @@ import { Suspense } from "react";
 import { AnnouncementsBanner } from "@/features/landing/announcements-banner";
 import { LandingHero } from "@/features/landing/landing-hero";
 import { PhotoGalleryPlaceholder } from "@/features/landing/photo-gallery";
+import { ApiErrorPanel } from "@/components/shared/api-error-panel";
 import {
   buildEventMetadata,
   buildResultsListJsonLd,
   buildSportsEventJsonLd,
 } from "@/lib/metadata";
+import { ConfigurationError, getConfigurationHint } from "@/lib/errors";
 import { fetchPublicResultsFromApi } from "@/services/results-api";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -37,29 +39,41 @@ function LandingSkeleton() {
 }
 
 async function LandingContent() {
-  const data = await fetchPublicResultsFromApi();
-  const sportsJsonLd = buildSportsEventJsonLd(data.event, data.results.length);
-  const listJsonLd = buildResultsListJsonLd(data.event, data.results);
+  try {
+    const data = await fetchPublicResultsFromApi();
+    const sportsJsonLd = buildSportsEventJsonLd(data.event, data.results.length);
+    const listJsonLd = buildResultsListJsonLd(data.event, data.results);
 
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(sportsJsonLd) }}
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(sportsJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }}
+        />
+        <AnnouncementsBanner />
+        <LandingHero
+          event={data.event}
+          results={data.results}
+          lastUpdated={data.fetchedAt}
+        />
+        <PhotoGalleryPlaceholder />
+      </>
+    );
+  } catch (error) {
+    const hint = getConfigurationHint(error);
+    const showConfigHelp =
+      error instanceof ConfigurationError || hint.includes("environment variables") || hint.includes("event ID");
+    return (
+      <ApiErrorPanel
+        message={hint}
+        showConfigHelp={showConfigHelp}
       />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(listJsonLd) }}
-      />
-      <AnnouncementsBanner />
-      <LandingHero
-        event={data.event}
-        results={data.results}
-        lastUpdated={data.fetchedAt}
-      />
-      <PhotoGalleryPlaceholder />
-    </>
-  );
+    );
+  }
 }
 
 export default function HomePage() {

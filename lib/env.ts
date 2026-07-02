@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { ConfigurationError } from "@/lib/errors";
 
 const serverSchema = z.object({
   ALAMATRACKS_API_URL: z.string().url(),
@@ -6,7 +7,7 @@ const serverSchema = z.object({
 });
 
 const clientSchema = z.object({
-  NEXT_PUBLIC_SITE_URL: z.string().url().default("http://localhost:3000"),
+  NEXT_PUBLIC_SITE_URL: z.string().url(),
   NEXT_PUBLIC_EVENT_LOGO_URL: z.string().optional(),
   NEXT_PUBLIC_AUTO_REFRESH_SECONDS: z.coerce.number().int().min(0).default(45),
 });
@@ -20,9 +21,25 @@ function parseEnv<T extends z.ZodTypeAny>(
     const formatted = result.error.issues
       .map((issue) => `${issue.path.join(".")}: ${issue.message}`)
       .join("\n");
-    throw new Error(`Invalid environment configuration:\n${formatted}`);
+    throw new ConfigurationError(
+      `Invalid environment configuration:\n${formatted}`,
+    );
   }
   return result.data;
+}
+
+/** Resolve public site URL — supports Vercel auto-injected deployment URLs. */
+export function resolveSiteUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) {
+    return process.env.NEXT_PUBLIC_SITE_URL;
+  }
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  }
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  return "http://localhost:3000";
 }
 
 export function getServerEnv() {
@@ -34,9 +51,17 @@ export function getServerEnv() {
 
 export function getClientEnv() {
   return parseEnv(clientSchema, {
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    NEXT_PUBLIC_SITE_URL: resolveSiteUrl(),
     NEXT_PUBLIC_EVENT_LOGO_URL: process.env.NEXT_PUBLIC_EVENT_LOGO_URL,
     NEXT_PUBLIC_AUTO_REFRESH_SECONDS:
       process.env.NEXT_PUBLIC_AUTO_REFRESH_SECONDS,
   });
+}
+
+/** Client-safe site URL — prefers the browser origin when available. */
+export function getPublicSiteUrl(fallback?: string): string {
+  if (typeof window !== "undefined") {
+    return window.location.origin;
+  }
+  return fallback ?? resolveSiteUrl();
 }

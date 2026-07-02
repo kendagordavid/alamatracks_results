@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { AppProviders } from "@/components/providers";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { resolveSiteUrl } from "@/lib/env";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -22,9 +23,7 @@ export const metadata: Metadata = {
   },
   description:
     "Premium public race results powered by AlamaTracks. Fast, accessible, and beautiful on every device.",
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  ),
+  metadataBase: new URL(resolveSiteUrl()),
 };
 
 export default function RootLayout({
