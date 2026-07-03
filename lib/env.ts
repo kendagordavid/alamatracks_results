@@ -28,13 +28,15 @@ function parseEnv<T extends z.ZodTypeAny>(
   return result.data;
 }
 
+const CANONICAL_PRODUCTION_URL = "https://alamatracks-results.vercel.app";
+
 /** Resolve public site URL — supports Vercel auto-injected deployment URLs. */
 export function resolveSiteUrl(): string {
   if (process.env.NEXT_PUBLIC_SITE_URL) {
     return process.env.NEXT_PUBLIC_SITE_URL;
   }
-  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
-    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.VERCEL_ENV === "production") {
+    return CANONICAL_PRODUCTION_URL;
   }
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
