@@ -22,6 +22,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 1,
       },
       {
+        url: `${NEXT_PUBLIC_SITE_URL}/participants`,
+        lastModified: new Date(data.fetchedAt),
+        changeFrequency: "hourly",
+        priority: 0.9,
+      },
+      {
+        url: `${NEXT_PUBLIC_SITE_URL}/participants/board`,
+        lastModified: new Date(data.fetchedAt),
+        changeFrequency: "hourly",
+        priority: 0.8,
+      },
+      {
         url: `${NEXT_PUBLIC_SITE_URL}/results`,
         lastModified: new Date(data.fetchedAt),
         changeFrequency: "hourly",

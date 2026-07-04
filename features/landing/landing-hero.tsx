@@ -93,9 +93,15 @@ export function LandingHero({ event, results, lastUpdated }: LandingHeroProps) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-10 flex justify-center"
+          className="mt-10 flex flex-wrap justify-center gap-3"
         >
           <Button asChild size="lg" className="rounded-xl px-8">
+            <Link href="/participants">View Participants</Link>
+          </Button>
+          <Button asChild size="lg" variant="secondary" className="rounded-xl px-8">
+            <Link href="/participants/board">Big Screen Display</Link>
+          </Button>
+          <Button asChild size="lg" variant="outline" className="rounded-xl px-8">
             <Link href="/results">View Results</Link>
           </Button>
         </motion.div>
