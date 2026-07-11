@@ -1,5 +1,14 @@
-/** Parse ISO duration strings like "00:59:59.283823" or "01:03:15.689259" to milliseconds */
-export function parseDurationToMs(duration: string | null | undefined): number | null {
+/** Parse chip duration to milliseconds — API returns seconds as a float, legacy values may be HH:MM:SS strings */
+export function parseDurationToMs(
+  duration: string | number | null | undefined,
+): number | null {
+  if (duration == null) return null;
+
+  if (typeof duration === "number") {
+    if (Number.isNaN(duration) || duration < 0) return null;
+    return Math.round(duration * 1000);
+  }
+
   if (!duration) return null;
 
   const parts = duration.split(":");
