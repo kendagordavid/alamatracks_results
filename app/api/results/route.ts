@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
+import { ZodError } from "zod";
 import { fetchPublicResultsFromApi } from "@/services/results-api";
 import { ConfigurationError, getConfigurationHint } from "@/lib/errors";
 import { ResultsApiError } from "@/types/results";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 30;
 
 export async function GET() {
@@ -24,6 +26,16 @@ export async function GET() {
       return NextResponse.json(
         { error: getConfigurationHint(error) },
         { status: 503 },
+      );
+    }
+    if (error instanceof ZodError) {
+      console.error("Results API schema error:", error.flatten());
+      return NextResponse.json(
+        {
+          error:
+            "Results data from the API did not match the expected format. The site may need an update — try again after the latest deploy finishes.",
+        },
+        { status: 502 },
       );
     }
     console.error("Results API error:", error);

@@ -13,7 +13,7 @@ export const publicResultSchema = z.object({
   category_id: z.string().uuid(),
   distance: z.number(),
   position: z.number(),
-  duration: z.number().nullable(),
+  duration: z.union([z.number(), z.string()]).nullable(),
   finish_time: z.string().nullable(),
   start_time: z.string().nullable(),
 });
