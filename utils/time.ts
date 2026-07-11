@@ -51,13 +51,13 @@ export function computeGunTimeMs(
   return finish - start;
 }
 
-export function computePacePerKm(
+export function computeSpeedKmh(
   durationMs: number | null,
   distanceKm: number,
 ): string | null {
   if (!durationMs || distanceKm <= 0) return null;
-  const paceMs = durationMs / distanceKm;
-  return formatDurationMs(paceMs);
+  const speedKmh = (distanceKm * 3_600_000) / durationMs;
+  return speedKmh.toFixed(1);
 }
 
 export function inferGenderFromCategory(categoryName: string): "male" | "female" | "other" {

@@ -1,7 +1,7 @@
 import type { AthleteResult, PublicResult } from "@/types/results";
 import {
   computeGunTimeMs,
-  computePacePerKm,
+  computeSpeedKmh,
   formatDurationMs,
   inferGenderFromCategory,
   parseDurationToMs,
@@ -18,7 +18,7 @@ export function enrichResults(results: PublicResult[]): AthleteResult[] {
       overallRank: 0,
       chipTimeMs,
       gunTimeMs,
-      pacePerKm: computePacePerKm(chipTimeMs, result.distance),
+      speedKmh: computeSpeedKmh(chipTimeMs, result.distance),
       inferredGender: inferGenderFromCategory(result.category_name),
       chipTimeFormatted: formatDurationMs(chipTimeMs),
       gunTimeFormatted: formatDurationMs(gunTimeMs),

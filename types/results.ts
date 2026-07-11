@@ -43,7 +43,7 @@ export type AthleteResult = PublicResult & {
   overallRank: number;
   chipTimeMs: number | null;
   gunTimeMs: number | null;
-  pacePerKm: string | null;
+  speedKmh: string | null;
   inferredGender: InferredGender;
   chipTimeFormatted: string | null;
   gunTimeFormatted: string | null;

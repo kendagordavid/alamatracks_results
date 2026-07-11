@@ -60,7 +60,7 @@ const COLUMN_LABELS: Record<string, string> = {
   fullName: "Athlete",
   category_name: "Category",
   chipTimeFormatted: "Chip Time",
-  pacePerKm: "Pace",
+  speedKmh: "Speed (km/h)",
   gunTimeFormatted: "Gun Time",
 };
 
@@ -69,7 +69,7 @@ export function ResultsExperience() {
     useResultsQuery();
   const [filters, setFilters] = useResultsFilters();
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    pacePerKm: true,
+    speedKmh: true,
     gunTimeFormatted: false,
     category_name: true,
   });
@@ -190,12 +190,12 @@ export function ResultsExperience() {
         size: 100,
       },
       {
-        id: "pacePerKm",
-        accessorKey: "pacePerKm",
-        header: "Pace",
+        id: "speedKmh",
+        accessorKey: "speedKmh",
+        header: "Speed (km/h)",
         cell: ({ row }) => (
           <span className="hidden font-mono text-sm tabular-nums sm:inline">
-            {row.original.pacePerKm ?? "—"}
+            {row.original.speedKmh ?? "—"}
           </span>
         ),
         size: 88,

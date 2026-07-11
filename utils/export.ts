@@ -20,7 +20,7 @@ export function exportResultsToCsv(results: AthleteResult[]): string {
     "Distance (km)",
     "Chip Time",
     "Gun Time",
-    "Pace /km",
+    "Speed (km/h)",
   ];
 
   const rows = results.map((r) =>
@@ -35,7 +35,7 @@ export function exportResultsToCsv(results: AthleteResult[]): string {
       r.distance,
       r.chipTimeFormatted,
       r.gunTimeFormatted,
-      r.pacePerKm,
+      r.speedKmh,
     ]
       .map(escapeCsv)
       .join(","),

@@ -71,7 +71,7 @@ export function AthleteProfileContent({
   const stats = [
     { label: "Chip Time", value: athlete.chipTimeFormatted ?? "—" },
     { label: "Gun Time", value: athlete.gunTimeFormatted ?? "—" },
-    { label: "Pace /km", value: athlete.pacePerKm ?? "—" },
+    { label: "Speed", value: athlete.speedKmh ? `${athlete.speedKmh} km/h` : "—" },
     { label: "Distance", value: `${athlete.distance} km` },
   ];
 
